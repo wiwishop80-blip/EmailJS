@@ -37,6 +37,40 @@ function App() {
   const [showCompose, setShowCompose] = useState(false);
 
   const handleComposeChange = (e) => {
-    
-  }
+    setComposeEmail({
+      ...composeEmail,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    const templateParams = {
+      to_email: composeEmail.to,
+      subject: composeEmail.subject,
+      message: composeEmail.message,
+      from_name: 'Your Name',
+      reply_to: 'your-email@example.com'
+    };
+
+    emailjs.send(
+      'YOUR_SERVICE_ID', // Get from EmailJS
+      'YOUR_TEMPLATE_ID', // Get from EmailJS
+      templateParams
+    ).then((respone) => {
+      alert('Email sent succesfully!');
+      setShowCompose(false);
+      setComposeEmail({ to: '', subject: '', message: '' });
+    }).catch((error) => {
+      alert('Failed to send email. Please try again.');
+      console.error('Email error:', error);
+    });
+  };
+
+  const marKAsRead = (emailId) => {
+    setEmails(emails.map(email =>
+      email.id === emailId ? { ...email, read: true } : email
+    ));
+  };
 }
